@@ -613,8 +613,11 @@ class MyDialog(dialog.Dialog):
         second = self.ti.get()
         global rrr,sss,ddd
         export.output_to_file(rrr,ddd,sss,self.result)
-        usb.usbexport()
-        tkMessageBox.showinfo("Done","Exporting Done")
+        isUsb = usb.usbexport()
+        if isUsb :
+            tkMessageBox.showinfo("Done","Exporting Done")
+        else :
+            errorBox("USB Not Detected")
 
     def validate(self):
 
