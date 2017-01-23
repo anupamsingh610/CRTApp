@@ -1637,8 +1637,8 @@ class ViewOutput(tk.Frame):
 
 
         backButton = tk.Button(buttons, text = "Menu", command = lambda : controller.show_frame(Menu),image=controller.menu,compound="left",font=controller.buttonFont)
-        bButton = tk.Button(buttons,  command = lambda : self.backPage(controller,out,bButton,nButton),width = 30,state="disabled",image=controller.back,compound="left",font=controller.buttonFont,height=10)
-        nButton = tk.Button(buttons, command = lambda : self.nextPage(controller,out,bButton,nButton), width = 30,image=controller.next,compound="right",font=controller.buttonFont,height=10)
+        bButton = tk.Button(buttons,  command = lambda : self.backPage(controller,out,bButton,nButton),width = 30,state="disabled",image=controller.back,compound="left",font=controller.buttonFont,height=30)
+        nButton = tk.Button(buttons, command = lambda : self.nextPage(controller,out,bButton,nButton), width = 30,image=controller.next,compound="right",font=controller.buttonFont,height=30)
         # self.checkNextBack(controller,bButton,nButton)
 
         bButton.grid(padx = 5,row=0,column=0)
