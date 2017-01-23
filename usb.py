@@ -1,18 +1,13 @@
-import shutil
 import os
+import shutil
+
 
 def usbexport():
-    source = os.listdir("/home/pi/Desktop/")
+    source = "/home/pi/Desktop/"
     destination = "/media/pi/CRTEXPORT"
     #dest2="/media/pi/CRT/testing.text"
     #CHANGE NAME OF TANVI TO CRT AND THE PENDRIVE BEING CONNECTED SHOULD BE NAMED CRT
-    try:
-        for files in source:
-            if files.endswith("exporting.text"):
-                print "25"
-                shutil.move(files,destination)
-    except:
-        #os.remove(destination)
-        print "24"
-        shutil.move(files,destination)
-#usbexport()        
+    for filename in os.listdir(source):
+        if filename.endswith("exporting.dat"):
+            shutil.move(source + filename,destination)
+   

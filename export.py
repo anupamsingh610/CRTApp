@@ -27,8 +27,331 @@ def output_to_file(r,d,s,interval):
   
 
 def giveresult(result,interval,outfile):
-    print "42"
+    maxtemp = float(result[0][1])
+    mintemp = float(result[0][1])
+	
+    absmaxtemp = float(result[0][1])
+    absmintemp = float(result[0][1])
+
+    epochcalc=int(result[0][0])
+        
+    kk=time.strftime("%d/%m/%Y %H:%M:%S",time.localtime(float(result[0][0])))
+	
+    x=kk[:10]
+    y=kk[11:16]
+
+    mindate =x																				#min ki date
+    maxdate =x																			
+	
+    absmaxdate =x																		#absolute max ki date
+    absmindate =x
+
+    mintime=y			
+    maxtime=y
+	
+    absmaxtime=y
+    absmintime=y
+	
+    perdate=x
+
+    if maxtemp<0:
+        if maxtemp<=-10.0:
+            outstring3="3 " +str(maxdate)+" "+str(maxtime)+" " + (tt_final)+" Deg C HR MAX"
+        else:
+            timetemp = tt_file[1:]
+            timetemp = "-0"+timetemp
+            outstring3="3 " +str(maxdate)+" "+str(maxtime)+" " + (timetemp)+" Deg C HR MAX"
+            
+    else:
+        if maxtemp<10.0:
+            outstring3="3 " +str(maxdate)+" "+str(maxtime)+" +0" +(str(float(maxtemp)))+" Deg C HR MAX"
+        else:
+            outstring3="3 " +str(maxdate)+" "+str(maxtime)+" +" +(str(float(maxtemp)))+" Deg C HR MAX"
+        
+    if mintemp<0:
+        if mintemp<=-10.0:
+            outstring4="4 " +str(mindate)+" "+str(mintime)+" " + str("05.1f" % (float(mintemp)))+" Deg C HR MIN"
+        else:
+            timetemp = tt_file[1:]
+            timetemp = "-0"+timetemp
+            outstring4="4 " +str(mindate)+" "+str(mintime)+" " + (timetemp)+" Deg C HR MIN"
+    else:
+        if mintemp<10.0:
+            outstring4="4 " +str(mindate)+" "+str(mintime)+" +0" + (str(float(mintemp)))+" Deg C HR MIN"
+        else:
+            outstring4="4 " +str(mindate)+" "+str(mintime)+" +" +(str(float(mintemp)))+" Deg C HR MIN"
+  
+                
+  
+
+    number10 = 0
+    count = epochcalc
+    intt = int(interval)
+    apt_diff = 60*intt
+    i=0
     num=0
+	
+    for row in result:
+        i=i+1
+        #number10+=1
+        kk=time.strftime("%d/%m/%Y %H:%M:%S",time.localtime(float(row[0])))
+        epochcalc2=int(row[0])
+        epochdiff1 = int((epochcalc2-epochcalc)/60)
+           
+        #if epochdiff1>(60*intt):
+            #epochcalc2=row[0]
+        outdate = kk[:10]
+        outtime = kk[11:16]
+        outtemp = float(row[1])
+        outtemp = float(outtemp)
+        tt_file=str(outtemp)
+        temptemp=outtemp
+        if outtemp>=absmaxtemp:															#changing absolute maximum and minimum(which will be per minute)
+            absmaxtemp=outtemp
+            absmaxdate=outdate
+            absmaxtime=outtime
+            abmx=tt_file
+		                
+        if absmintemp>=outtemp:
+            absmintemp=outtemp
+            absmindate=outdate
+            absmintime=outtime
+            abmn=tt_file
+            
+        if epochdiff1%intt==0:  #num%60==0																	for every hour (increasing num at every minute(reading))
+            difference1 = epochcalc2-count
+            count=epochcalc2
+            if difference1 == 2*apt_diff:
+                kk2=time.strftime("%d/%m/%Y %H:%M:%S",time.localtime(float(result[i-1][0])-60*intt))
+                outdate_2 = kk2[:10]
+                outtime_2 = kk2[11:16]
+                outtemp_2 = float(result[i-1][1])
+                if outtemp_2<0:
+                    if outtemp<=-10.0:
+                        outstring = "2 "+str(outdate_2)+" "+outtime_2+" " +tt_file+" Deg C"
+                    else:
+                        timetemp = tt_file[1:]
+                        timetemp = "-0"+timetemp
+                        outstring = "2 "+str(outdate_2)+" "+outtime_2+" " +timetemp+" Deg C"
+                else:
+                    if outtemp_2<10.0:
+                        outstring = "2 "+str(outdate_2)+" "+outtime_2+" +0" +tt_file+" Deg C"
+                    else:
+                        outstring = "2 "+str(outdate_2)+" "+outtime_2+" +" +tt_file+" Deg C"
+                    
+                outfile.write(outstring+"\n")
+                  
+                                                                                
+            if perdate!=outdate:
+                perdate=outdate
+                outfile.write(outstring3+"\n")														#Writing the hourly maximum and minimum temperature
+                outfile.write(outstring4+"\n")														#Writing Line-3 and Line-4
+                mintemp=outtemp
+                maxtemp=outtemp
+                mindate=outdate
+                maxdate=outdate
+                mintime=outtime
+                maxtime=outtime
+                               
+            if mintemp>=outtemp:
+                mintemp=float(outtemp)
+                mindate=outdate
+                mintime=outtime
+                if mintemp>=0:
+                    if mintemp<10.0:    
+                        outstring4 = "4 "+str(mindate)+" "+str(mintime)+" +" + tt_file+" Deg C HR MIN"
+                    else:
+                        outstring4 = "4 "+str(mindate)+" "+str(mintime)+" +" + tt_file+" Deg C HR MIN"
+                else:
+                    if mintemp<=-10.0:
+                        outstring4 = "4 "+str(mindate)+" "+str(mintime)+" " + tt_file+" Deg C HR MIN"
+                    else:
+                        timetemp = tt_file[1:]
+                        timetemp = "-0"+timetemp
+                        outstring4 = "4 "+str(mindate)+" "+str(mintime)+" " + timetemp+" Deg C HR MIN"
+                        
+            if outtemp>=maxtemp:															
+                maxtemp=outtemp
+                maxdate=outdate
+                maxtime=outtime
+                if outtemp>=0:
+                    if outtemp<10.0:
+                        outstring3 = "3 " +str(maxdate)+" "+str(maxtime)+" +" + tt_file+" Deg C HR MAX"						#hourly max temperature per day
+                    else:
+                        outstring3 = "3 " +str(maxdate)+" "+str(maxtime)+" +" + tt_file+" Deg C HR MAX"
+                else:
+                    if outtemp<=-10.0:
+                        outstring3 = "3 " +str(maxdate)+" "+str(maxtime)+" " + tt_file+" Deg C HR MAX"						#hourly max temperature per day
+                    else:
+                        timetemp = tt_file[1:]
+                        timetemp = "-0"+timetemp
+                        outstring3 = "3 " +str(maxdate)+" "+str(maxtemp)+" " + timetemp+" Deg C HR MAX"
+
+                            		
+            if outtemp>=0 : 																#Line 2 of the output file
+                if outtemp<10.0:
+                    outstring = "2 "+str(outdate)+" "+outtime+" +0" +tt_file+" Deg C"
+                else:
+                    outstring = "2 "+str(outdate)+" "+outtime+" +" +tt_file+" Deg C"
+                   
+            else :
+                if outtemp<=-10.0:
+                     outstring = "2 "+str(outdate)+" "+outtime+" " + tt_file+" Deg C"
+                else:
+                     timetemp = tt_file[1:]
+                     timetemp = "-0"+timetemp
+                     outstring = "2 "+str(outdate)+" "+outtime+" " + timetemp+" Deg C"
+       
+            outfile.write(outstring+"\n")
+		
+        num=num+1
+															
+    outfile.write(outstring3+"\n")														#Writing the hourly maximum and minimum temperature
+    outfile.write(outstring4+"\n")														#Writing Line-3 and Line-4
+    if absmaxtemp>0:
+        if absmaxtemp<10.0:
+            outstring5 = "5 "+str(absmaxdate)+" "+str(absmaxtime)+" +" + abmx+" Deg C AB MAX"		#Writing Absolute minimum and maximum ONCE
+        else:
+            outstring5 = "5 "+str(absmaxdate)+" "+str(absmaxtime)+" +" + abmx+" Deg C AB MAX"
+    else:
+        if absmaxtemp<=-10.0:
+            outstring5 = "5 "+str(absmaxdate)+" "+str(absmaxtime)+" -" + abmx+" Deg C AB MAX"		#Writing Absolute minimum and maximum ONCE
+        else:
+            timetemp = abmx[1:]
+            timetemp = "-0"+timetemp
+            outstring5 = "5 "+str(absmaxdate)+" "+str(absmaxtime)+" -" + timetemp+" Deg C AB MAX"		#Writing Absolute minimum and maximum ONCE
+              
+	
+    if(absmintemp<0):
+        if absmintemp<=-10.0:
+            outstring6 = "6 "+str(absmindate)+" "+str(absmintime)+" " + abmn+" Deg C AB MIN"
+        else:
+            timetemp = abmn[1:]
+            timetemp = "-0"+timetemp
+            outstring6 = "6 "+str(absmindate)+" "+str(absmintime)+" " + timetemp+" Deg C AB MIN"
+            
+    else:
+        if absmintemp<10.0:
+            outstring6 = "6 "+str(absmindate)+" "+str(absmintime)+" +" +(abmn)+" Deg C AB MIN"
+        else:
+            outstring6 = "6 "+str(absmindate)+" "+str(absmintime)+" +" + (abmn)+" Deg C AB MIN"
+    outfile.write(outstring5+"\n")	
+    outfile.write(outstring6+"\n")
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+    print "42"
+    """num=0
     maxtemp = result[0][1]
     mintemp = result[0][1]
 	
@@ -155,3 +478,4 @@ def giveresult(result,interval,outfile):
     outfile.write(outstring6+"\n")
     #return "2"
     print "45"
+"""
