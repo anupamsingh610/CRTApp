@@ -13,7 +13,7 @@ import glob
 import shutil
 import binascii
 import MySQLdb
-import pyaudio
+# import pyaudio
 
 try:
     import Tkinter as tk
