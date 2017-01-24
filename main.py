@@ -13,7 +13,7 @@ import glob
 import shutil
 import binascii
 import MySQLdb
-# import pyaudio
+import pyaudio
 
 try:
     import Tkinter as tk
@@ -31,13 +31,13 @@ except ImportError: #py3
 
 import pcalendar            #Calender Widget
 import dialog               #Export Dialog Box
-#import toaudio              #Export via 3.5mm Jack
+# #import toaudio              #Export via 3.5mm Jack
 import dbms                 #Updating and Querying DB
 import usb                  #Export via USB
 import temperature          #Fetch Temperature
 import export               #Export Functionality
 import buzzer               #Control Buzzer
-# import Voltagechecker       #Voltage Checking
+import Voltagechecker       #Voltage Checking
 
 
 ### ### ### ### ### ### GLOBAL DECLARATION ### ### ### ### ### ###
@@ -1855,21 +1855,20 @@ class PasswordChange(tk.Frame):
         self.passw1.set("")
         self.passw2.set("")
         
-        #if """u == "anupam" and""" p == "singh":
         if p1 and p2:
-        	if p1 == p2:
-        		global PASSWORD
-        		#PASSWORD = p1
-        		outfile1 = open(HOMEDIR+"/data/securp.dat","w")
-                hashObject = hashlib.sha512(p1)
-                p1 = hashObject.hexdigest()
-                outfile1.write(p1)
+            if p1 == p2:
+                global PASSWORD
+                passoutfile = open(HOMEDIR+"/data/securp.dat","w")
+                hashObjects = hashlib.sha512(p1)
+                p1 = hashObjects.hexdigest()
+                passoutfile.write(p1)
                 infoBox("Done")
                 controller.show_frame(Menu)
             else:
                 errorBox("Password doesn't match")
         else:
-            errorBox("Invalid input")
+            errorBox("Invalid Input")
+
 
     def backPressed(self,controller):
 
