@@ -1867,9 +1867,9 @@ class PasswordChange(tk.Frame):
                 infoBox("Done")
                 controller.show_frame(Menu)
             else:
-                errorBox("Password doesn't Match")
+                errorBox("Password doesn't match")
         else:
-            errorBox("Invalid Input")
+            errorBox("Invalid input")
 
     def backPressed(self,controller):
 
