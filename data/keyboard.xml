@@ -125,44 +125,44 @@
     </key>
 -->
     <key obey-caps='true'>
-	  <default display="Q" />                
+	  <default display="q" />                
 	  <shifted display="Q" />
     </key>
     <key obey-caps='true'>
-	  <default display="W" />                
+	  <default display="w" />                
 	  <shifted display="W" />
     </key>
     <key obey-caps='true'>
 	  <!--<mod1 display="ë" />-->
-	  <default    display="E" />                
+	  <default    display="e" />                
 	  <shifted display="E" />
     </key>
     <key obey-caps='true'>
-	  <default display="R" />                
+	  <default display="r" />                
 	  <shifted display="R" />
     </key>
     <key obey-caps='true'>
-	  <default display="T" />                
+	  <default display="t" />                
 	  <shifted display="T" />
     </key>
     <key obey-caps='true'>
-	  <default display="Y" />                
+	  <default display="y" />                
 	  <shifted display="Y" />
     </key>
     <key obey-caps='true'>
-	  <default display="U" />                
+	  <default display="u" />                
 	  <shifted display="U" />
     </key>
     <key obey-caps='true'>
-	  <default display="I" />                
+	  <default display="i" />                
 	  <shifted display="I" />
     </key>
     <key obey-caps='true'>
-	  <default display="O" />                
+	  <default display="o" />                
 	  <shifted display="O" />
     </key>
     <key obey-caps='true'>
-	  <default display="P" />                
+	  <default display="p" />                
 	  <shifted display="P" />
     </key>
     <key>
@@ -198,39 +198,39 @@
 	  <default display="Caps" action="modifier:caps"/>                
     </key>
     <key obey-caps='true'>
-	  <default display="A" />                
+	  <default display="a" />                
 	  <shifted display="A" />
     </key>
     <key obey-caps='true'>
-	  <default display="S" />                
+	  <default display="s" />                
 	  <shifted display="S" />
     </key>
     <key obey-caps='true'>
-	  <default display="D" />                
+	  <default display="d" />                
 	  <shifted display="D" />
     </key>
     <key obey-caps='true'>
-	  <default display="F" />                
+	  <default display="f" />                
 	  <shifted display="F" />
     </key>
     <key obey-caps='true'>
-	  <default display="G" />                
+	  <default display="g" />                
 	  <shifted display="G" />
     </key>
     <key obey-caps='true'>
-	  <default display="H" />                
+	  <default display="h" />                
 	  <shifted display="H" />
     </key>
     <key obey-caps='true'>
-	  <default display="J" />                
+	  <default display="j" />                
 	  <shifted display="J" />
     </key>
     <key obey-caps='true'>
-	  <default display="K" />                
+	  <default display="k" />                
 	  <shifted display="K" />
     </key>
     <key obey-caps='true'>
-	  <default display="L" />                
+	  <default display="l" />                
 	  <shifted display="L" />
     </key>
     <key>
@@ -265,37 +265,37 @@
     </key>
 
     <key obey-caps='true'>
-	  <default display="Z" />                
+	  <default display="z" />                
 	  <shifted display="Z" />
     </key>
 
     <key obey-caps='true'>
-	  <default display="X" />                
+	  <default display="x" />                
 	  <shifted display="X" />
     </key>
 
     <key obey-caps='true'>
-	  <default display="C" />                
+	  <default display="c" />                
 	  <shifted display="C" />
     </key>
 
     <key obey-caps='true'>
-	  <default display="V" />                
+	  <default display="v" />                
 	  <shifted display="V" />
     </key>
 
     <key obey-caps='true'>
-	  <default display="B" />                
+	  <default display="b" />                
 	  <shifted display="B" />
     </key>
 
     <key obey-caps='true'>
-	  <default display="N" />                
+	  <default display="n" />                
 	  <shifted display="N" />
     </key>
 
     <key obey-caps='true'>
-	  <default display="M" />                
+	  <default display="m" />                
 	  <shifted display="M" />
     </key>
 
