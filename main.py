@@ -1849,8 +1849,6 @@ class PasswordChange(tk.Frame):
 
         controller.close_keyboard()
 
-        flag = 0
-
         p1=self.passw1.get()
         p2=self.passw2.get()
 
@@ -1860,7 +1858,6 @@ class PasswordChange(tk.Frame):
         #if """u == "anupam" and""" p == "singh":
         if p1 and p2:
         	if p1 == p2:
-        		flag = 1
         		global PASSWORD
         		#PASSWORD = p1
         		outfile1 = open(HOMEDIR+"/data/securp.dat","w")
@@ -1868,7 +1865,6 @@ class PasswordChange(tk.Frame):
                 p1 = hashObject.hexdigest()
                 outfile1.write(p1)
                 infoBox("Done")
-        	if flag==1:
         		controller.show_frame(Menu)
         	else:
         		errorBox("Password doesn't Match")
