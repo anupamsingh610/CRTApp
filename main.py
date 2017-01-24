@@ -1865,7 +1865,7 @@ class PasswordChange(tk.Frame):
                 p1 = hashObject.hexdigest()
                 outfile1.write(p1)
                 infoBox("Done")
-        		controller.show_frame(Menu)
+                controller.show_frame(Menu)
         	else:
         		errorBox("Password doesn't Match")
         else:
