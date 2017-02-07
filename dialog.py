@@ -1,5 +1,6 @@
 import Tkinter as tk
 import os
+import processkill
 
 
 class Dialog(tk.Toplevel):
@@ -67,6 +68,7 @@ class Dialog(tk.Toplevel):
     def ok(self, event=None):
 
         os.system("killall matchbox-keyboard")
+        processkill.hangproblem()
         if not self.validate():
             self.initial_focus.focus_set() # put focus back
             return
@@ -82,6 +84,7 @@ class Dialog(tk.Toplevel):
 
         # put focus back to the parent window
         os.system("killall matchbox-keyboard")
+        processkill.hangproblem()
         self.parent.focus_set()
         self.destroy()
 

@@ -1010,6 +1010,7 @@ class TMSConfig(tk.Frame):
     def adjust(self,event):
 
     	os.system("killall matchbox-keyboard") #controller.close_keyboard()
+        processkill.hangproblem()
     	subprocess.Popen("matchbox-keyboard")
     	self.title.grid_forget()
         self.separator.grid_forget()
@@ -1021,6 +1022,7 @@ class TMSConfig(tk.Frame):
     def readjust(self, event):
 
     	os.system("killall matchbox-keyboard") # controller.close_keyboard()
+        processkill.hangproblem()
     	self.entry.grid_forget()
     	self.buttons.grid_forget()
     	self.title.grid(row=0,column=0,pady=10,padx=10,columnspan=3, sticky = "w")
