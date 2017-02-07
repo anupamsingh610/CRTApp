@@ -39,7 +39,7 @@ import temperature          #Fetch Temperature
 import export               #Export Functionality
 import buzzer               #Control Buzzer
 #import Voltagechecker       #Voltage Checking
-import processkill    
+import processkill          #kill pcmanfm
 
 ### ### ### ### ### ### GLOBAL DECLARATION ### ### ### ### ### ###
 
