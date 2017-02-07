@@ -110,7 +110,7 @@ class Calendar(ttk.Frame):
         defaultFont = tkFont.Font(family = "Helvetica", size = 14, weight = "bold")
         self._header = ttk.Label(hframe, width=15, anchor='center',font=defaultFont)
         # the calendar
-        self._calendar = ttk.Treeview(show='', selectmode='none', height=6)
+        self._calendar = ttk.Treeview(show='', selectmode='none', height=7)
 
         # pack the widgets
         hframe.grid_columnconfigure(0,minsize=30)

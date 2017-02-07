@@ -13,7 +13,8 @@ import glob
 import shutil
 import binascii
 import MySQLdb
-# import pyaudio
+import pyaudio
+import psutil
 
 try:
     import Tkinter as tk
@@ -31,14 +32,14 @@ except ImportError: #py3
 
 import pcalendar            #Calender Widget
 import dialog               #Export Dialog Box
-# #import toaudio              #Export via 3.5mm Jack
+import toaudio              #Export via 3.5mm Jack
 import dbms                 #Updating and Querying DB
 import usb                  #Export via USB
 import temperature          #Fetch Temperature
 import export               #Export Functionality
 import buzzer               #Control Buzzer
-import Voltagechecker       #Voltage Checking
-
+#import Voltagechecker       #Voltage Checking
+import processkill    
 
 ### ### ### ### ### ### GLOBAL DECLARATION ### ### ### ### ### ###
 
@@ -122,7 +123,7 @@ def update_maxmin(temp):
         MAXIMUM=float(MAXIMUM)
         MINIMUM=float(MINIMUM)
         if temp>currentMaxTempValue:
-            print MAXIMUM
+            #print MAXIMUM
             if temp<MAXIMUM:
                 if temp!=85.0:
                     currentMaxTempValue=temp
@@ -286,6 +287,25 @@ def recorder(num = 1):
         else:
             app.after(0,lambda:recorder(num+1))
 
+def getserial():
+            cpuserial1="00000000923ddd4c"
+            str(cpuserial1)
+            f = open('/proc/cpuinfo','r')
+            for line in f:
+                if line[0:6]=='Serial':
+                    cpuserial = line[10:26]
+            #print cpuserial
+                    str(cpuserial)
+            if cpuserial1==cpuserial:
+                flagreturn = 1
+            else:
+                flagreturn = 0    
+            if flagreturn==1:
+                pass
+            else:
+                errorBox("Unauthorised access to software!")
+                sys.exit()
+
 
 def output_on_screen(r,d,s,interval,dx,d2,hh12,hh2,mm1,mm2):
 
@@ -296,18 +316,37 @@ def output_on_screen(r,d,s,interval,dx,d2,hh12,hh2,mm1,mm2):
     sql= """USE CRT1;"""
     cursor.execute(sql)
 	
-    outfile = open("/home/pi/Desktop/output.dat","w") 													#ismei save krenge output
+    outfile = open("/home/pi/Desktop/output.txt","w") 													#ismei save krenge output
 
     global rrr,sss,ddd
     rrr=rrr.upper()
     sss=sss.upper()
     ddd=ddd.upper()
+    if len(rrr)==1:
+        rrr=rrr+"   "
+    elif len(rrr)==2:
+        rrr=rrr+"  "
+    elif len(rrr)==3:
+        rrr=rrr+" "
+    if len(sss)==1:
+        sss=sss+"   "
+    elif len(rrr)==2:
+        sss=sss+"  "
+    elif len(rrr)==3:
+        sss=sss+" "
+    if len(ddd)==1:
+        ddd=ddd+"   "
+    elif len(ddd)==2:
+        ddd=ddd+"  "
+    elif len(ddd)==3:
+        ddd=ddd+" "
+    
     outstring1 = "1 "+rrr+" "+ddd+" "+sss
     outfile.write(outstring1+"\n")
     dx=str(dx)
     d2=str(d2)
-    print dx
-    print d2
+    #print dx
+    #print d2
     
     
     #time1=str(time1)
@@ -373,35 +412,36 @@ def output_on_screen(r,d,s,interval,dx,d2,hh12,hh2,mm1,mm2):
         perdate=x
 
         if maxtemp<0:
+            maxdate=maxdate[0:]
             if maxtemp<=-10.0:
-                outstring3="3 " +str(maxdate)+" "+str(maxtime)+" " + (tt_final)+" Deg C HR MAX"
+                outstring3="3 " +str(maxdate[:6])+str(maxdate[-2:])+" "+str(maxtime)+" " + (tt_final)+" Deg C HR MAX"
             else:
                 timetemp = tt_file[1:]
                 timetemp = "-0"+timetemp
-                outstring3="3 " +str(maxdate)+" "+str(maxtime)+" " + (timetemp)+" Deg C HR MAX"
+                outstring3="3 " +str(maxdate[:6])+str(maxdate[-2:])+" "+str(maxtime)+" " + (timetemp)+" Deg C HR MAX"
             
         else:
             if maxtemp<10.0:
-                outstring3="3 " +str(maxdate)+" "+str(maxtime)+" +0" +(str(float(maxtemp)))+" Deg C HR MAX"
+                outstring3="3 " +str(maxdate[:6])+str(maxdate[-2:])+" "+str(maxtime)+" +0" +(str(float(maxtemp)))+" Deg C HR MAX"
             else:
-                outstring3="3 " +str(maxdate)+" "+str(maxtime)+" +" +(str(float(maxtemp)))+" Deg C HR MAX"
+                outstring3="3 " +str(maxdate[:6])+str(maxdate[-2:])+" "+str(maxtime)+" +" +(str(float(maxtemp)))+" Deg C HR MAX"
         
         if mintemp<0:
             if mintemp<=-10.0:
-                outstring4="4 " +str(mindate)+" "+str(mintime)+" " + str("05.1f" % (float(mintemp)))+" Deg C HR MIN"
+                outstring4="4 " +str(mindate[:6])+str(mindate[-2:])+" "+str(mintime)+" " + str("05.1f" % (float(mintemp)))+" Deg C HR MIN"
             else:
                 timetemp = tt_file[1:]
                 timetemp = "-0"+timetemp
-                outstring4="4 " +str(mindate)+" "+str(mintime)+" " + (timetemp)+" Deg C HR MIN"
+                outstring4="4 " +str(mindate[:6])+str(mindate[-2:])+" "+str(mintime)+" " + (timetemp)+" Deg C HR MIN"
 
         else:
             if mintemp<10.0:
-                outstring4="4 " +str(mindate)+" "+str(mintime)+" +0" + (str(float(mintemp)))+" Deg C HR MIN"
+                outstring4="4 " +str(mindate[:6])+str(mindate[-2:])+" "+str(mintime)+" +0" + (str(float(mintemp)))+" Deg C HR MIN"
             else:
-                outstring4="4 " +str(mindate)+" "+str(mintime)+" +" +(str(float(mintemp)))+" Deg C HR MIN"
+                outstring4="4 " +str(mindate[:6])+str(mindate[-2:])+" "+str(mintime)+" +" +(str(float(mintemp)))+" Deg C HR MIN"
   
                 
-            print mintemp
+            #print mintemp
             
 
 	number10 = 0
@@ -447,16 +487,16 @@ def output_on_screen(r,d,s,interval,dx,d2,hh12,hh2,mm1,mm2):
                     outtemp_2 = float(result[i-1][1])
                     if outtemp_2<0:
                         if outtemp<=-10.0:
-                            outstring = "2 "+str(outdate_2)+" "+outtime_2+" " +tt_file+" Deg C"
+                            outstring = "2 "+str(outdate_2[:6])+str(outdate_2[-2:])+" "+outtime_2+" " +tt_file+" Deg C"
                         else:
                             timetemp = tt_file[1:]
                             timetemp = "-0"+timetemp
-                            outstring = "2 "+str(outdate_2)+" "+outtime_2+" " +timetemp+" Deg C"
+                            outstring = "2 "+str(outdate_2[:6])+str(outdate_2[-2:])+" "+outtime_2+" " +timetemp+" Deg C"
                     else:
                         if outtemp_2<10.0:
-                            outstring = "2 "+str(outdate_2)+" "+outtime_2+" +0" +tt_file+" Deg C"
+                            outstring = "2 "+str(outdate_2[:6])+str(outdate_2[-2:])+" "+outtime_2+" +0" +tt_file+" Deg C"
                         else:
-                            outstring = "2 "+str(outdate_2)+" "+outtime_2+" +" +tt_file+" Deg C"
+                            outstring = "2 "+str(outdate_2[:6])+str(outdate_2[-2:])+" "+outtime_2+" +" +tt_file+" Deg C"
                     
                     outfile.write(outstring+"\n")
                     
@@ -479,16 +519,16 @@ def output_on_screen(r,d,s,interval,dx,d2,hh12,hh2,mm1,mm2):
                     if mintemp>=0:
                         if mintemp<10.0:
                             print mintemp
-                            outstring4 = "4 "+str(mindate)+" "+str(mintime)+" +" + tt_file+" Deg C HR MIN"
+                            outstring4 = "4 "+str(mindate[:6])+str(mindate[-2:])+" "+str(mintime)+" +" + tt_file+" Deg C HR MIN"
                         else:
-                            outstring4 = "4 "+str(mindate)+" "+str(mintime)+" +" + tt_file+" Deg C HR MIN"
+                            outstring4 = "4 "+str(mindate[:6])+str(mindate[-2:])+" "+str(mintime)+" +" + tt_file+" Deg C HR MIN"
                     else:
                         if mintemp<=-10.0:
-                            outstring4 = "4 "+str(mindate)+" "+str(mintime)+" " + tt_file+" Deg C HR MIN"
+                            outstring4 = "4 "+str(mindate[:6])+str(mindate[-2:])+" "+str(mintime)+" " + tt_file+" Deg C HR MIN"
                         else:
                             timetemp = tt_file[1:]
                             timetemp = "-0"+timetemp
-                            outstring4 = "4 "+str(mindate)+" "+str(mintime)+" " + timetemp+" Deg C HR MIN"
+                            outstring4 = "4 "+str(mindate[:6])+str(mindate[-2:])+" "+str(mintime)+" " + timetemp+" Deg C HR MIN"
                         
                 if outtemp>=maxtemp:															
                     maxtemp=outtemp
@@ -496,31 +536,31 @@ def output_on_screen(r,d,s,interval,dx,d2,hh12,hh2,mm1,mm2):
                     maxtime=outtime
                     if outtemp>=0:
                         if outtemp<10.0:
-                            outstring3 = "3 " +str(maxdate)+" "+str(maxtime)+" +" + tt_file+" Deg C HR MAX"						#hourly max temperature per day
+                            outstring3 = "3 " +str(maxdate[:6])+str(maxdate[-2:])+" "+str(maxtime)+" +" + tt_file+" Deg C HR MAX"						#hourly max temperature per day
                         else:
-                            outstring3 = "3 " +str(maxdate)+" "+str(maxtime)+" +" + tt_file+" Deg C HR MAX"
+                            outstring3 = "3 " +str(maxdate[:6])+str(maxdate[-2:])+" "+str(maxtime)+" +" + tt_file+" Deg C HR MAX"
 		    else:
                         if outtemp<=-10.0:
-                            outstring3 = "3 " +str(maxdate)+" "+str(maxtime)+" " + tt_file+" Deg C HR MAX"						#hourly max temperature per day
+                            outstring3 = "3 " +str(maxdate[:6])+str(maxdate[-2:])+" "+str(maxtime)+" " + tt_file+" Deg C HR MAX"						#hourly max temperature per day
                         else:
                             timetemp = tt_file[1:]
                             timetemp = "-0"+timetemp
-                            outstring3 = "3 " +str(maxdate)+" "+str(maxtemp)+" " + timetemp+" Deg C HR MAX"
+                            outstring3 = "3 " +str(maxdate[:6])+str(maxdate[-2:])+" "+str(maxtemp)+" " + timetemp+" Deg C HR MAX"
 
                             		
                 if outtemp>=0 : 																#Line 2 of the output file
                     if outtemp<10.0:
-                        outstring = "2 "+str(outdate)+" "+outtime+" +0" +tt_file+" Deg C"
+                        outstring = "2 "+str(outdate[:6])+str(outdate[-2:])+" "+outtime+" +0" +tt_file+" Deg C"
                     else:
-                        outstring = "2 "+str(outdate)+" "+outtime+" +" +tt_file+" Deg C"
+                        outstring = "2 "+str(outdate[:6])+str(outdate[-2:])+" "+outtime+" +" +tt_file+" Deg C"
                     
                 else :
                     if outtemp<=-10.0:
-                         outstring = "2 "+str(outdate)+" "+outtime+" " + tt_file+" Deg C"
+                         outstring = "2 "+str(outdate[:6])+str(outdate[-2:])+" "+outtime+" " + tt_file+" Deg C"
                     else:
                          timetemp = tt_file[1:]
                          timetemp = "-0"+timetemp
-                         outstring = "2 "+str(outdate)+" "+outtime+" " + timetemp+" Deg C"
+                         outstring = "2 "+str(outdate[:6])+str(outdate[-2:])+" "+outtime+" " + timetemp+" Deg C"
        
                 outfile.write(outstring+"\n")
 		
@@ -530,31 +570,31 @@ def output_on_screen(r,d,s,interval,dx,d2,hh12,hh2,mm1,mm2):
         outfile.write(outstring4+"\n")														#Writing Line-3 and Line-4
         if absmaxtemp>0:
             if absmaxtemp<10.0:
-                outstring5 = "5 "+str(absmaxdate)+" "+str(absmaxtime)+" +" + abmx+" Deg C AB MAX"		#Writing Absolute minimum and maximum ONCE
+                outstring5 = "5 "+str(absmaxdate[:6])+str(absmaxdate[-2:])+" "+str(absmaxtime)+" +" + abmx+" Deg C AB MAX"		#Writing Absolute minimum and maximum ONCE
             else:
-                outstring5 = "5 "+str(absmaxdate)+" "+str(absmaxtime)+" +" + abmx+" Deg C AB MAX"
+                outstring5 = "5 "+str(absmaxdate[:6])+str(absmaxdate[-2:])+" "+str(absmaxtime)+" +" + abmx+" Deg C AB MAX"
 	else:
             if absmaxtemp<=-10.0:
-                outstring5 = "5 "+str(absmaxdate)+" "+str(absmaxtime)+" -" + abmx+" Deg C AB MAX"		#Writing Absolute minimum and maximum ONCE
+                outstring5 = "5 "+str(absmaxdate[:6])+str(absmaxdate[-2:])+" "+str(absmaxtime)+" -" + abmx+" Deg C AB MAX"		#Writing Absolute minimum and maximum ONCE
             else:
                 timetemp = abmx[1:]
                 timetemp = "-0"+timetemp
-                outstring5 = "5 "+str(absmaxdate)+" "+str(absmaxtime)+" -" + timetemp+" Deg C AB MAX"		#Writing Absolute minimum and maximum ONCE
+                outstring5 = "5 "+str(absmaxdate[:6])+str(absmaxdate[-2:])+" "+str(absmaxtime)+" -" + timetemp+" Deg C AB MAX"		#Writing Absolute minimum and maximum ONCE
               
 	
         if(absmintemp<0):
             if absmintemp<=-10.0:
-                outstring6 = "6 "+str(absmindate)+" "+str(absmintime)+" " + abmn+" Deg C AB MIN"
+                outstring6 = "6 "+str(absmindate[:6])+str(absmindate[-2:])+" "+str(absmintime)+" " + abmn+" Deg C AB MIN"
             else:
                 timetemp = abmn[1:]
                 timetemp = "-0"+timetemp
-                outstring6 = "6 "+str(absmindate)+" "+str(absmintime)+" " + timetemp+" Deg C AB MIN"
+                outstring6 = "6 "+str(absmindate[:6])+str(absmindate[-2:])+" "+str(absmintime)+" " + timetemp+" Deg C AB MIN"
             
         else:
             if absmintemp<10.0:
-                outstring6 = "6 "+str(absmindate)+" "+str(absmintime)+" +" +(abmn)+" Deg C AB MIN"
+                outstring6 = "6 "+str(absmindate[:6])+str(absmindate[-2:])+" "+str(absmintime)+" +" +(abmn)+" Deg C AB MIN"
             else:
-                outstring6 = "6 "+str(absmindate)+" "+str(absmintime)+" +" + (abmn)+" Deg C AB MIN"
+                outstring6 = "6 "+str(absmindate[:6])+str(absmindate[-2:])+" "+str(absmintime)+" +" + (abmn)+" Deg C AB MIN"
         outfile.write(outstring5+"\n")	
         outfile.write(outstring6+"\n")
         #return "2"
@@ -597,13 +637,13 @@ class MyDialog(dialog.Dialog):
         self.entry.grid(row=1,column=0,padx=10)
         self.entry.bind("<Button-1>",lambda x: subprocess.Popen("matchbox-keyboard"))
         self.entry.bind("<FocusIn>",lambda x: subprocess.Popen("matchbox-keyboard"))
-
+        
         self.ti = tk.StringVar(master)
         self.ti.set(TILIST[0])
         TI = ttk.Combobox(master, textvariable = self.ti, values=TILIST,width=10,font=defaultFont)
         TI.grid(row=1,column=1)
         return self.entry
-
+        
     def apply(self):
 
         """over ridden function defines what actions to take 
@@ -698,6 +738,7 @@ class CRTApp(tk.Tk):
         time.sleep(2)
         self.logo.place_forget()
         self.show_frame(Login)
+        getserial()
 
     def show_frame(self, cont):
 
@@ -750,6 +791,7 @@ class CRTApp(tk.Tk):
 
     def close_keyboard(self,event=None):
         os.system("killall matchbox-keyboard")
+        processkill.hangproblem()
 
     def checkNextBack(self):
 
@@ -771,7 +813,7 @@ class CRTApp(tk.Tk):
         self.line_offset = []
         offset = 0
         x = 0
-        file = open('/home/pi/Desktop/output.dat','r')
+        file = open('/home/pi/Desktop/output.txt','r')
         for line in file:
             if(x == 0):
                 self.line_offset.append(offset)
@@ -781,7 +823,7 @@ class CRTApp(tk.Tk):
         # file.seek(0)
 
     def read_file(self,direction):
-        infile = open('/home/pi/Desktop/output.dat', 'r')
+        infile = open('/home/pi/Desktop/output.txt', 'r')
         if direction == 0:
             self.it = self.it - 1
         if direction == 1:
@@ -1261,7 +1303,6 @@ class Menu(tk.Frame):
         self.grid_columnconfigure(2,weight=1,minsize = MINSIZECOLUMN)
         self.grid_rowconfigure(2,weight=3,minsize = MINSIZEROW2)
         self.grid_rowconfigure(3,weight=1,minsize = MINSIZEROW3)
-
         title = tk.Label(self, text="Menu", font=controller.headerFont)
         title.grid(pady=10,padx=10,columnspan = 3, sticky="w")
 
@@ -1883,5 +1924,3 @@ global app
 app = CRTApp()
 
 app.mainloop()
-
-
